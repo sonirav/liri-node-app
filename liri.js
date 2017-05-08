@@ -1,19 +1,21 @@
 // Node Software ---- By Ravinder Soni
 // Defining the global variables
+// API Calls to spotify, omdb and twitter
+
 var fs = require("fs");
 var ky = require("./keys.js");
 var inquirer = require("inquirer");
-var action = process.argv;
+//var action = process.argv;     //Not Used  in this version kept it there for further ref.
 var newSearch = "";
 var request = require("request");
 var myChoices;
-// Clearing the screen
-process.stdout.write('\033c');
-myLoop();  // Calling Menu Option
+
+
+myLoop(); // Calling Menu Option
 //  *********************** Calling Request
 
 function myLoop() { //It is continues call for the menu till user selects exit
-
+process.stdout.write('\033c');
     inquirer.prompt([{
         type: "list",
         name: "myChoices",
@@ -24,7 +26,7 @@ function myLoop() { //It is continues call for the menu till user selects exit
         console.log(user.myChoices);
         if (user.myChoices == "Movies") {
 
-            action[2] = "movies-this";
+        //    action[2] = "movies-this";
 
             checkarg("1"); // formatting the command line search 
 
@@ -32,14 +34,14 @@ function myLoop() { //It is continues call for the menu till user selects exit
         } else
         if (user.myChoices == "Spotify") {
 
-            action[2] = "spotify-this-song";
+      //      action[2] = "spotify-this-song";
 
             checkarg("2"); // formatting the command line search 
 
         } else
         if (user.myChoices == "Tweets") {
 
-            action[2] = "my-tweets";
+      //      action[2] = "my-tweets";
             chktwitter();
         } else
         if (user.myChoices == "Exit") {
@@ -57,11 +59,11 @@ function myLoop() { //It is continues call for the menu till user selects exit
 function chktwitter() {
     var Twitter = require('twitter');
     var client = new Twitter({
-    
-        consumer_key:ky.consumer_key,
-        consumer_secret:ky.consumer_secret,
-        access_token_key:ky.access_token_key,
-        access_token_secret:ky.access_token_secret,
+
+        consumer_key: ky.consumer_key,
+        consumer_secret: ky.consumer_secret,
+        access_token_key: ky.access_token_key,
+        access_token_secret: ky.access_token_secret,
     });
 
     var params = {
@@ -91,7 +93,7 @@ function chktwitter() {
         } else {
             console.log(error);
         }
-        myLoop();
+        askQuestion();
     });
 
 }
@@ -127,18 +129,18 @@ function chkmovie(newSearch, request) {
             console.log("\n************************************************");
             console.log("Title: " + mTitle, "\nReleased: " + mReleased, "\nIMDB Ratings: " + mImdb, "\nCountry: " + mCountry, "\nLanguage: " + mLanguage, "\nPlot: " + mPlot, "\nActors: " + mActor, "\nRotton Tomatoes: " + mRottonTomatos);
             console.log("************************************************");
-
+			askQuestion(); // asking question to continue and clearing screen for the menu
         }
     });
     // ...
-    myLoop();
+
 }
 
 
 
 // ************************************ Spotify Function
-function chkspotify(newSearch, request) {
-    process.stdout.write('\033c');
+function chkspotify(newSearch) {
+    //   process.stdout.write('\033c');
 
     var spotify = require('spotify');
     if (newSearch == "") {
@@ -149,19 +151,29 @@ function chkspotify(newSearch, request) {
 
     spotify.search({
         type: 'track',
-        query: newSearch
+        query: newSearch,
+        limit: 10,
+        offset: 20
     }, function(err, data) {
         if (err) {
             console.log('Error occurred: ' + err);
             return;
         } else {
-            var jdata = JSON.stringify(data, null, 4);
-            console.log(jdata);
+         //   console.log(JSON.stringify(data.tracks, null, 4)); 
+            console.log("\n**********************************************************")
+            console.log("Track :" + JSON.stringify(data.tracks.items[0].name, null, 2));
+            console.log("Popularity:" + JSON.stringify(data.tracks.items[0].popularity, null, 2));
+            console.log("Track #:" + JSON.stringify(data.tracks.items[0].track_number, null, 2));
+            console.log("Song Url:" + JSON.stringify(data.tracks.items[0].external_urls.spotify, null, 2));
+            console.log('Artist:' + JSON.stringify(data.tracks.items[0].artists[0].name, null, 2));
+            console.log("**********************************************************")
+			askQuestion(); // asking question to continue and clearing screen for the menu
         }
 
-        // Do something with 'data' 
+
+      
     });
-    myLoop();
+    
 }
 
 
@@ -194,9 +206,31 @@ function checkarg(xnum) {
 
         }, ]).then(function(user) {
             newSearch = user.newSearch1.split(' ').join('+');
-            chkspotify(newSearch, request);
+            chkspotify(newSearch);
         })
     }
+
+}
+
+function askQuestion() {
+
+    inquirer.prompt([{
+        type: "input",
+        name: "newConf",
+        message: "\nPress <Enter> to Continue?"
+
+
+    }, ]).then(function(user) {
+        if (true) {
+
+            myLoop();
+
+        }
+
+
+
+
+    })
 
 }
 
