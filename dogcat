@@ -1,0 +1,11 @@
+var dog={
+		raining:true,
+		noise:'Woff',
+		makeNoise:function({if (dog.raining){console.log(dog.noise)})
+}
+var cat = {raining:false,
+		noise:'Meow',
+		makeNoise:function({if (cat.raining){console.log(cat.noise)})
+}
+console.log(dog.makeNoise);
+console.log(cat.makeNoise);

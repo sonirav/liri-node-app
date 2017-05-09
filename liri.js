@@ -125,7 +125,8 @@ function chkmovie(newSearch, request) {
             var mLanguage = jdata.Language;
             var mPlot = jdata.Plot;
             var mActor = jdata.Actors;
-            var mRottonTomatos = JSON.stringify(jdata.Ratings[0].Value);
+            
+            var mRottonTomatos = JSON.stringify(jdata.Ratings[0]);
             console.log("\n************************************************");
             console.log("Title: " + mTitle, "\nReleased: " + mReleased, "\nIMDB Ratings: " + mImdb, "\nCountry: " + mCountry, "\nLanguage: " + mLanguage, "\nPlot: " + mPlot, "\nActors: " + mActor, "\nRotton Tomatoes: " + mRottonTomatos);
             console.log("************************************************");
@@ -226,9 +227,6 @@ function askQuestion() {
             myLoop();
 
         }
-
-
-
 
     })
 
